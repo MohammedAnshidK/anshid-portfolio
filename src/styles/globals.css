@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #09090b;
+  --color-foreground: #ffffff;
+  --color-accent: #b6ff5c;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  /* Offset section anchors so smooth-scroll lands below the fixed navbar (64px) */
+  section[id] {
+    scroll-margin-top: 72px;
+  }
+
+  /* GPU hint for elements that animate transform */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-background);
+  }
+}
+
+/* Hide cursor glow on touch / coarse-pointer devices */
+@media (pointer: coarse) {
+  .cursor-glow {
+    display: none !important;
+  }
+}

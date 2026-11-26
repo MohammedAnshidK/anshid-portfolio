@@ -81,7 +81,7 @@ export default function IntroAnimation({ onComplete }) {
                 ? { duration: 0.8, ease: 'easeInOut' }
                 : { duration: 2, repeat: Infinity, ease: 'easeInOut' }
             }
-            className="absolute h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(182,255,92,0.22)_0%,transparent_70%)] blur-3xl"
+            className="absolute h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(226,162,58,0.22)_0%,transparent_70%)] blur-3xl"
           />
 
           {/* Floating particles */}
@@ -150,7 +150,7 @@ export default function IntroAnimation({ onComplete }) {
             </span>
             <span className="text-3xl font-bold tracking-[0.2em] text-foreground sm:text-4xl">
               ANSHID
-              <span className="ml-1 inline-block h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_12px_rgba(182,255,92,0.8)]" />
+              <span className="ml-1 inline-block h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_12px_rgba(226,162,58,0.8)]" />
             </span>
             <span className="font-mono text-xs tracking-widest text-accent/80">
               {'</ dev >'}

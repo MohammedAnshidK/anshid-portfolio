@@ -66,7 +66,7 @@ const TAG_STYLES = {
 }
 
 const GLOW_COLORS = {
-  active: 'hover:border-accent/40 hover:shadow-[0_0_22px_rgba(182,255,92,0.14)] hover:bg-accent/[0.04]',
+  active: 'hover:border-accent/40 hover:shadow-[0_0_22px_rgba(226,162,58,0.14)] hover:bg-accent/[0.04]',
   learning: 'hover:border-emerald-400/35 hover:shadow-[0_0_22px_rgba(52,211,153,0.12)] hover:bg-emerald-400/[0.03]',
   tools: 'hover:border-white/25 hover:shadow-[0_0_22px_rgba(255,255,255,0.06)] hover:bg-white/[0.04]',
 }
@@ -174,7 +174,7 @@ function Skills() {
             : { opacity: [0.2, 0.38, 0.2], scale: [1, 1.06, 1] }
         }
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute top-1/2 -left-24 h-[480px] w-[480px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(182,255,92,0.11)_0%,transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute top-1/2 -left-24 h-[480px] w-[480px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(226,162,58,0.11)_0%,transparent_70%)] blur-3xl"
       />
 
       <div className="relative z-10 mx-auto max-w-6xl px-6">

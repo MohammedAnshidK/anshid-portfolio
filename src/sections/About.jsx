@@ -79,7 +79,7 @@ function About() {
               }
         }
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(182,255,92,0.12)_0%,transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(226,162,58,0.12)_0%,transparent_70%)] blur-3xl"
       />
 
       <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 lg:grid-cols-12 lg:gap-12">

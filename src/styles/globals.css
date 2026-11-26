@@ -1,9 +1,46 @@
 @import "tailwindcss";
 
+/*
+  Signal console tokens.
+  Existing utilities (bg-background, text-foreground, text-accent, font-mono)
+  read these values. Section layout is unchanged.
+*/
 @theme {
-  --color-background: #09090b;
-  --color-foreground: #ffffff;
-  --color-accent: #b6ff5c;
+  --color-background: #07080d;
+  --color-foreground: #f4f1ea;
+  --color-muted: #9aa3b5;
+  --color-surface: #10131c;
+  --color-surface-raised: #171b27;
+  --color-hairline: #f4f1ea1f;
+  --color-signal: #e2a23a;
+  --color-accent: #e2a23a;
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+
+  /* Matches the current page rhythm: header 64px, gutter 24px, sections 96/112/128px, page 72rem */
+  --spacing-header: 4rem;
+  --spacing-gutter: 1.5rem;
+  --spacing-section: 6rem;
+  --spacing-section-sm: 7rem;
+  --spacing-section-lg: 8rem;
+  --spacing-page: 72rem;
+
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+
+  --shadow-glow: 0 0 24px rgb(226 162 58 / 0.35);
+  --shadow-panel: 0 24px 80px rgb(0 0 0 / 0.75);
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --tracking-display: -0.03em;
+  --leading-display: 1.08;
+  --text-display: 3.75rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 600;
 }
 
 @layer base {
@@ -14,9 +51,11 @@
   html {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-optical-sizing: auto;
   }
 
   body {
@@ -24,20 +63,27 @@
     min-height: 100vh;
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
   }
 
-  /* Offset section anchors so smooth-scroll lands below the fixed navbar (64px) */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+  }
+
+  /* Offset section anchors so smooth-scroll lands below the fixed navbar */
   section[id] {
-    scroll-margin-top: 72px;
+    scroll-margin-top: calc(var(--spacing-header) + 0.5rem);
   }
 
-  /* GPU hint for elements that animate transform */
   .will-change-transform {
     will-change: transform;
   }
 
   ::selection {
-    background-color: var(--color-accent);
+    background-color: var(--color-signal);
     color: var(--color-background);
   }
 }

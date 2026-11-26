@@ -109,7 +109,7 @@ function ProjectCard({ project, index }) {
       viewport={VIEWPORT_CONFIG}
       transition={{ duration: 0.6, delay: index * 0.12, ease: EASE_OUT_EXPO }}
     >
-      <TiltCard className="group relative h-full rounded-2xl border border-white/10 bg-white/[0.025] p-6 transition-colors duration-300 hover:border-accent/25 hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(182,255,92,0.07)]">
+      <TiltCard className="group relative h-full rounded-2xl border border-white/10 bg-white/[0.025] p-6 transition-colors duration-300 hover:border-accent/25 hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(226,162,58,0.07)]">
         {/* Subtle top rim on hover */}
         <div
           aria-hidden="true"
@@ -187,7 +187,7 @@ function Projects() {
             : { opacity: [0.18, 0.32, 0.18], scale: [1, 1.07, 1] }
         }
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute -top-16 right-0 h-[500px] w-[500px] translate-x-1/3 rounded-full bg-[radial-gradient(circle,rgba(182,255,92,0.12)_0%,transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute -top-16 right-0 h-[500px] w-[500px] translate-x-1/3 rounded-full bg-[radial-gradient(circle,rgba(226,162,58,0.12)_0%,transparent_70%)] blur-3xl"
       />
 
       <div className="relative z-10 mx-auto max-w-6xl px-6">

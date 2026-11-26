@@ -112,7 +112,7 @@ function Hero() {
               }
         }
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[680px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(182,255,92,0.14)_0%,transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[680px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(226,162,58,0.14)_0%,transparent_70%)] blur-3xl"
       />
 
       {/* Main Content Container */}

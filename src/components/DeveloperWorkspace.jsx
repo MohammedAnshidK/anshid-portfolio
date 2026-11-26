@@ -164,7 +164,7 @@ function DeveloperWorkspace({ scrollParallaxY }) {
               }
         }
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute -inset-6 rounded-full bg-[radial-gradient(circle_at_center,rgba(182,255,92,0.18)_0%,rgba(182,255,92,0.05)_45%,transparent_72%)] blur-2xl"
+        className="pointer-events-none absolute -inset-6 rounded-full bg-[radial-gradient(circle_at_center,rgba(226,162,58,0.18)_0%,rgba(226,162,58,0.05)_45%,transparent_72%)] blur-2xl"
       />
 
       {/* Layered Background Frame */}

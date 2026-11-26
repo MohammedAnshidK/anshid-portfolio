@@ -47,7 +47,7 @@ export default function CursorGlow() {
       transition={{ duration: 0.3 }}
       // Hidden on touch / coarse-pointer devices via Tailwind's pointer:coarse variant isn't available,
       // so we use a CSS class added in globals.css via @media (pointer: coarse)
-      className="cursor-glow pointer-events-none fixed left-0 top-0 z-[100] h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(182,255,92,0.07)_0%,transparent_70%)] blur-3xl will-change-transform"
+      className="cursor-glow pointer-events-none fixed left-0 top-0 z-[100] h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(226,162,58,0.07)_0%,transparent_70%)] blur-3xl will-change-transform"
       style={{ x, y }}
     />
   )

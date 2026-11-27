@@ -6,17 +6,19 @@
   read these values. Section layout is unchanged.
 */
 @theme {
-  --color-background: #07080d;
-  --color-foreground: #f4f1ea;
+  --color-background: #09090b;
+  --color-foreground: #ffffff;
   --color-muted: #9aa3b5;
   --color-surface: #10131c;
   --color-surface-raised: #171b27;
-  --color-hairline: #f4f1ea1f;
-  --color-signal: #e2a23a;
-  --color-accent: #e2a23a;
+  --color-hairline: #ffffff1f;
+  --color-signal: #b6ff5c;
+  --color-accent: #b6ff5c;
 
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-manrope: "Manrope", "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: "Instrument Serif", Georgia, serif;
   --font-mono: "Geist Mono", ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
 
   /* Matches the current page rhythm: header 64px, gutter 24px, sections 96/112/128px, page 72rem */
@@ -30,7 +32,7 @@
   --radius-card: 1rem;
   --radius-pill: 999px;
 
-  --shadow-glow: 0 0 24px rgb(226 162 58 / 0.35);
+  --shadow-glow: 0 0 24px rgb(182 255 92 / 0.35);
   --shadow-panel: 0 24px 80px rgb(0 0 0 / 0.75);
 
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);

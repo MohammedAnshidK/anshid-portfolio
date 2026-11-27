@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import {
   AnimatePresence,
@@ -22,6 +22,7 @@ function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [hoveredHref, setHoveredHref] = useState(null)
   const [activeHref, setActiveHref] = useState('#home')
+  const toggleButtonRef = useRef(null)
 
   const { scrollY } = useScroll()
 
@@ -36,6 +37,7 @@ function Navbar() {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         setIsMobileOpen(false)
+        toggleButtonRef.current?.focus()
       }
     }
 
@@ -102,7 +104,7 @@ function Navbar() {
           <span>ANSHID</span>
           <span
             aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_rgba(226,162,58,0.75)] transition-transform duration-300 group-hover:scale-125"
+            className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_rgba(182,255,92,0.75)] transition-transform duration-300 group-hover:scale-125"
           />
         </a>
 
@@ -163,7 +165,7 @@ function Navbar() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 450, damping: 28 }}
-            className="group hidden items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-background transition-shadow duration-300 hover:shadow-[0_0_24px_rgba(226,162,58,0.35)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent md:inline-flex"
+            className="group hidden items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-background transition-shadow duration-300 hover:shadow-[0_0_24px_rgba(182,255,92,0.35)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent md:inline-flex"
           >
             <span>Let&apos;s Talk</span>
             <ArrowUpRight
@@ -173,6 +175,7 @@ function Navbar() {
           </motion.a>
 
           <motion.button
+            ref={toggleButtonRef}
             type="button"
             onClick={() => setIsMobileOpen((prev) => !prev)}
             whileHover={{ scale: 1.05 }}
@@ -276,7 +279,7 @@ function Navbar() {
                   onClick={(e) => handleLinkSelect('#contact', e)}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-background transition-shadow duration-300 hover:shadow-[0_0_24px_rgba(226,162,58,0.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-background transition-shadow duration-300 hover:shadow-[0_0_24px_rgba(182,255,92,0.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   <span>Let&apos;s Talk</span>
                   <ArrowUpRight aria-hidden="true" className="h-4 w-4" />

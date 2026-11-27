@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 
 const VARIANT_CLASSES = {
   primary:
-    'bg-accent text-background font-semibold hover:shadow-[0_0_28px_rgba(226,162,58,0.38)]',
+    'bg-accent text-background font-semibold hover:shadow-[0_0_28px_rgba(182,255,92,0.38)]',
   secondary:
     'border border-white/15 bg-white/[0.03] text-foreground font-medium hover:border-accent/50 hover:bg-white/[0.06]',
 }

@@ -1,40 +1,28 @@
-import { useRef } from 'react'
-import { ArrowDown, ArrowRight, MapPin } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowDown, ArrowRight, MapPin, Sparkles } from 'lucide-react'
 import {
   motion,
+  useMotionTemplate,
+  useMotionValue,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
 } from 'motion/react'
 import ActionButton from '../components/ActionButton'
-import DeveloperWorkspace from '../components/DeveloperWorkspace'
 
 const EASE_OUT_EXPO = [0.22, 1, 0.36, 1]
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.09,
-      delayChildren: 0.1,
-    },
-  },
-}
+const LENS_SIZE = 220
+const LENS_RADIUS = LENS_SIZE / 2
+const LENS_SCALE = 1.28
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: EASE_OUT_EXPO,
-    },
-  },
-}
-
-const HEADLINE_WORDS = ['I', 'Build', 'Digital', 'Experiences.']
+const HEADLINE_WORDS = [
+  { text: 'I', italic: false, accent: false },
+  { text: 'Build', italic: false, accent: false },
+  { text: 'Digital', italic: true, accent: true },
+  { text: 'Experiences.', italic: false, accent: false },
+]
 
 function GitHubIcon() {
   return (
@@ -65,69 +53,212 @@ function LinkedInIcon() {
 const SOCIAL_LINKS = [
   {
     name: 'GitHub',
-    href: 'https://github.com',
+    href: 'https://github.com/MohammedAnshidK',
     ariaLabel: 'Mohammed Anshid on GitHub',
     icon: GitHubIcon,
   },
   {
     name: 'LinkedIn',
-    href: 'https://www.linkedin.com',
+    href: 'https://www.linkedin.com/in/mohammed-anshid-k-b17363421/',
     ariaLabel: 'Mohammed Anshid on LinkedIn',
     icon: LinkedInIcon,
   },
 ]
 
+function useIsCoarsePointer() {
+  const [isCoarse] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(pointer: coarse)').matches
+      : false
+  )
+  return isCoarse
+}
+
+function EditorialHeadline({ isClone = false, shouldReduceMotion = false }) {
+  return (
+    <div className="space-y-4 sm:space-y-5">
+      <motion.p
+        initial={isClone || shouldReduceMotion ? false : { opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, delay: 0.12, ease: EASE_OUT_EXPO }}
+        className="font-mono text-sm tracking-wide text-white/80 sm:text-base"
+      >
+        Hi, I&apos;m{' '}
+        <span className="font-semibold text-foreground">Mohammed Anshid</span>.
+      </motion.p>
+
+      <h1
+        id={isClone ? undefined : 'hero-heading'}
+        style={{ fontFamily: 'var(--font-manrope)' }}
+        className="text-5xl leading-[1.03] font-extrabold tracking-[-0.035em] text-foreground sm:text-6xl md:text-7xl lg:text-[5.25rem]"
+      >
+        {HEADLINE_WORDS.map((word, index) => (
+          <span key={word.text}>
+            <motion.span
+              initial={
+                isClone || shouldReduceMotion ? false : { opacity: 0, y: 26 }
+              }
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.65,
+                delay: 0.2 + index * 0.08,
+                ease: EASE_OUT_EXPO,
+              }}
+              style={
+                word.italic
+                  ? { fontFamily: 'var(--font-editorial)' }
+                  : undefined
+              }
+              className={`inline-block ${
+                word.italic
+                  ? 'pr-1.5 text-[1.08em] font-normal italic text-accent drop-shadow-[0_0_24px_rgba(182,255,92,0.28)]'
+                  : ''
+              }`}
+            >
+              {word.text}
+            </motion.span>
+            {index < HEADLINE_WORDS.length - 1 ? ' ' : ''}
+          </span>
+        ))}
+      </h1>
+
+      <motion.p
+        initial={isClone || shouldReduceMotion ? false : { opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.48, ease: EASE_OUT_EXPO }}
+        style={{ fontFamily: 'var(--font-manrope)' }}
+        className="max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg md:text-xl"
+      >
+        <span className="font-semibold text-foreground">
+          Aspiring MERN Stack Developer.
+        </span>{' '}
+        Currently exploring modern web technologies and building interactive
+        digital experiences.
+      </motion.p>
+    </div>
+  )
+}
+
 function Hero() {
   const sectionRef = useRef(null)
+  const stageRef = useRef(null)
   const shouldReduceMotion = useReducedMotion()
+  const isCoarsePointer = useIsCoarsePointer()
+  const enableLens = !shouldReduceMotion && !isCoarsePointer
+
+  const [stageSize, setStageSize] = useState({ width: 0, height: 0 })
+  const [isLensActive, setIsLensActive] = useState(false)
+
+  const pointerX = useMotionValue(0)
+  const pointerY = useMotionValue(0)
+
+  const smoothX = useSpring(pointerX, { stiffness: 280, damping: 28, mass: 0.4 })
+  const smoothY = useSpring(pointerY, { stiffness: 280, damping: 28, mass: 0.4 })
+
+  const lensX = useTransform(smoothX, (v) => v - LENS_RADIUS)
+  const lensY = useTransform(smoothY, (v) => v - LENS_RADIUS)
+
+  const cloneOffsetX = useTransform(smoothX, (v) => LENS_RADIUS - v * LENS_SCALE)
+  const cloneOffsetY = useTransform(smoothY, (v) => LENS_RADIUS - v * LENS_SCALE)
+
+  const spotlightBg = useMotionTemplate`radial-gradient(420px circle at ${smoothX}px ${smoothY}px, rgba(59, 130, 246, 0.16), rgba(182, 255, 92, 0.06) 45%, transparent 72%)`
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
   })
 
-  const workspaceParallaxY = useTransform(scrollYProgress, [0, 1], [0, 48])
-  const contentParallaxY = useTransform(scrollYProgress, [0, 1], [0, 20])
+  const contentParallaxY = useTransform(scrollYProgress, [0, 1], [0, 36])
+  const blueGlowY = useTransform(scrollYProgress, [0, 1], [0, 70])
+
+  useEffect(() => {
+    if (!enableLens || !stageRef.current) return
+
+    const updateSize = () => {
+      if (!stageRef.current) return
+      const rect = stageRef.current.getBoundingClientRect()
+      setStageSize({ width: rect.width, height: rect.height })
+    }
+
+    updateSize()
+    const observer = new ResizeObserver(updateSize)
+    observer.observe(stageRef.current)
+
+    return () => observer.disconnect()
+  }, [enableLens])
+
+  const handleStagePointerMove = (e) => {
+    if (!enableLens || !stageRef.current || e.pointerType === 'touch') return
+    const rect = stageRef.current.getBoundingClientRect()
+    pointerX.set(e.clientX - rect.left)
+    pointerY.set(e.clientY - rect.top)
+    setIsLensActive((prev) => (prev ? prev : true))
+  }
+
+  const handleStagePointerLeave = () => {
+    setIsLensActive(false)
+  }
 
   return (
     <section
       id="home"
       ref={sectionRef}
       aria-labelledby="hero-heading"
-      className="relative flex min-h-[100svh] items-center overflow-hidden bg-background pt-20 pb-16 sm:pt-20 sm:pb-20 lg:pt-24"
+      className="relative flex min-h-[100svh] items-center overflow-hidden bg-background pt-24 pb-20 sm:pt-28 sm:pb-24"
     >
-      {/* Cinematic Background Grid & Ambient Glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_40%,#000_40%,transparent_100%)]"
-      />
+      {/* Deep Midnight Blue Radial Lighting & Ambient Lime Accent */}
       <motion.div
         aria-hidden="true"
+        style={shouldReduceMotion ? undefined : { y: blueGlowY }}
         animate={
           shouldReduceMotion
             ? undefined
-            : {
-                opacity: [0.35, 0.55, 0.35],
-                scale: [1, 1.05, 1],
-              }
+            : { opacity: [0.65, 0.9, 0.65], scale: [1, 1.06, 1] }
         }
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[680px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(226,162,58,0.14)_0%,transparent_70%)] blur-3xl"
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        className="pointer-events-none absolute -top-32 left-1/2 h-[620px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.22)_0%,rgba(29,78,216,0.09)_42%,transparent_72%)] blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-1/4 bottom-12 h-[360px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(182,255,92,0.09)_0%,transparent_70%)] blur-3xl"
       />
 
-      {/* Main Content Container */}
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-8 px-6 lg:grid-cols-12 lg:gap-10">
-        {/* LEFT SIDE: Intro & Actions */}
-        <motion.div
-          style={shouldReduceMotion ? undefined : { y: contentParallaxY }}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="lg:col-span-6"
+      {/* Minimal Fine Architectural Grid */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:80px_80px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_45%,#000_35%,transparent_100%)]"
+      />
+
+      {/* Editorial Hero Stage */}
+      <motion.div
+        style={shouldReduceMotion ? undefined : { y: contentParallaxY }}
+        className="relative z-10 mx-auto w-full max-w-6xl px-6"
+      >
+        <div
+          ref={stageRef}
+          onPointerMove={handleStagePointerMove}
+          onPointerLeave={handleStagePointerLeave}
+          className="relative rounded-3xl py-6 sm:py-10"
         >
-          {/* 1. Small Availability Badge */}
-          <motion.div variants={itemVariants} className="mb-6">
-            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/12 bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium text-white/85 backdrop-blur-sm">
+          {/* Interactive Stage Spotlight (Desktop Fine-Pointer Only) */}
+          {enableLens && (
+            <motion.div
+              aria-hidden="true"
+              animate={{ opacity: isLensActive ? 1 : 0 }}
+              transition={{ duration: 0.25 }}
+              style={{ background: spotlightBg }}
+              className="pointer-events-none absolute -inset-6 rounded-3xl"
+            />
+          )}
+
+          {/* Top Row: Availability Indicator + Static Mobile Lens Pill */}
+          <motion.div
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
+            className="mb-8 flex flex-wrap items-center justify-between gap-4 sm:mb-10"
+          >
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/12 bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-white/85 backdrop-blur-md">
               <span className="relative flex h-2 w-2" aria-hidden="true">
                 {!shouldReduceMotion && (
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
@@ -143,81 +274,48 @@ function Hero() {
                 Kerala, India
               </span>
             </span>
-          </motion.div>
 
-          {/* 2. Main Heading */}
-          <motion.h1
-            id="hero-heading"
-            variants={itemVariants}
-            className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl"
-          >
-            Hi, I&apos;m <span className="text-accent">Anshid.</span>
-          </motion.h1>
-
-          {/* 3. Animated Headline */}
-          <motion.h2
-            variants={itemVariants}
-            className="mt-3 text-3xl font-semibold tracking-tight text-white/90 sm:text-4xl lg:text-[2.65rem] lg:leading-[1.15]"
-          >
-            {HEADLINE_WORDS.map((word, index) => (
-              <span key={word}>
-                <motion.span
-                  initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.55,
-                    delay: 0.25 + index * 0.08,
-                    ease: EASE_OUT_EXPO,
-                  }}
-                  className={`inline-block ${
-                    word === 'Digital' || word === 'Experiences.'
-                      ? 'bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent'
-                      : ''
-                  }`}
-                >
-                  {word}
-                </motion.span>
-                {index < HEADLINE_WORDS.length - 1 ? ' ' : ''}
+            {/* Desktop Hint vs Mobile Static Glass Treatment */}
+            {enableLens ? (
+              <span className="hidden items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/[0.06] px-3.5 py-1 font-mono text-[11px] text-white/60 sm:inline-flex">
+                <Sparkles className="h-3 w-3 text-accent" aria-hidden="true" />
+                <span>Move cursor over text to magnify</span>
               </span>
-            ))}
-          </motion.h2>
-
-          {/* 4. Short Introduction */}
-          <motion.p
-            variants={itemVariants}
-            className="mt-6 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg"
-          >
-            I&apos;m <span className="font-medium text-foreground">Mohammed Anshid</span>, an
-            Aspiring MERN Stack Developer based in Kerala, India. I craft responsive,
-            accessible web interfaces with{' '}
-            <span className="text-foreground">HTML, CSS, JavaScript, and React</span>{' '}
-            while expanding my backend skills in{' '}
-            <span className="text-accent">Node.js, Express.js, and MongoDB</span>.
-          </motion.p>
-
-          {/* 5 & 6. Action Buttons */}
-          <motion.div
-            variants={itemVariants}
-            className="mt-6 flex flex-wrap items-center gap-4 lg:mt-8"
-          >
-            <ActionButton href="#projects" variant="primary" icon={ArrowRight}>
-              View My Work
-            </ActionButton>
-            <ActionButton href="#contact" variant="secondary">
-              Contact Me
-            </ActionButton>
+            ) : (
+              <div
+                aria-hidden="true"
+                className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-gradient-to-r from-blue-500/15 via-white/[0.04] to-accent/15 px-3.5 py-1 font-mono text-[11px] text-white/75 backdrop-blur-md"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                <span>MERN Stack Focus</span>
+              </div>
+            )}
           </motion.div>
 
-          {/* 7. Social Icons */}
+          {/* Base Editorial Typography */}
+          <EditorialHeadline shouldReduceMotion={shouldReduceMotion} />
+
+          {/* Interactive Actions & Socials */}
           <motion.div
-            variants={itemVariants}
-            className="mt-6 flex items-center gap-4 lg:mt-8"
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.56, ease: EASE_OUT_EXPO }}
+            className="mt-10 flex flex-wrap items-center justify-between gap-6 border-t border-white/10 pt-8"
           >
-            <span className="text-xs font-medium uppercase tracking-[0.16em] text-white/45">
-              Connect
-            </span>
-            <span aria-hidden="true" className="h-px w-8 bg-white/15" />
+            <div className="flex flex-wrap items-center gap-4">
+              <ActionButton href="#contact" variant="primary" icon={ArrowRight}>
+                Contact Me
+              </ActionButton>
+              <ActionButton href="#projects" variant="secondary">
+                View Projects
+              </ActionButton>
+            </div>
+
             <div className="flex items-center gap-3">
+              <span className="font-mono text-xs tracking-[0.14em] text-white/45 uppercase">
+                Connect
+              </span>
+              <span aria-hidden="true" className="h-px w-6 bg-white/15" />
               {SOCIAL_LINKS.map((social) => {
                 const Icon = social.icon
 
@@ -228,8 +326,10 @@ function Hero() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.ariaLabel}
-                    whileHover={{ y: -2, scale: 1.06 }}
-                    whileTap={{ scale: 0.94 }}
+                    whileHover={
+                      shouldReduceMotion ? undefined : { y: -2, scale: 1.06 }
+                    }
+                    whileTap={shouldReduceMotion ? undefined : { scale: 0.94 }}
                     transition={{ type: 'spring', stiffness: 420, damping: 24 }}
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-white/75 transition-colors duration-200 hover:border-accent/50 hover:bg-accent/10 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                   >
@@ -239,24 +339,60 @@ function Hero() {
               })}
             </div>
           </motion.div>
-        </motion.div>
 
-        {/* RIGHT SIDE: Cinematic CSS Developer Workspace */}
-        <div className="lg:col-span-6">
-          <DeveloperWorkspace scrollParallaxY={workspaceParallaxY} />
+          {/* Interactive Magnifying Glass Lens (Desktop Fine-Pointer Only) */}
+          {enableLens && stageSize.width > 0 && (
+            <motion.div
+              aria-hidden="true"
+              animate={{
+                opacity: isLensActive ? 1 : 0,
+                scale: isLensActive ? 1 : 0.85,
+              }}
+              transition={{ duration: 0.2, ease: EASE_OUT_EXPO }}
+              style={{
+                width: LENS_SIZE,
+                height: LENS_SIZE,
+                x: lensX,
+                y: lensY,
+              }}
+              className="pointer-events-none absolute top-0 left-0 z-30 overflow-hidden rounded-full border border-white/30 bg-[#090d1a]/85 shadow-[0_24px_60px_rgba(0,0,0,0.75),inset_0_0_28px_rgba(59,130,246,0.28),inset_0_0_12px_rgba(182,255,92,0.18)] backdrop-brightness-110 backdrop-contrast-110 will-change-transform"
+            >
+              {/* Magnified Cloned Stage Content */}
+              <motion.div
+                style={{
+                  width: stageSize.width,
+                  height: stageSize.height,
+                  x: cloneOffsetX,
+                  y: cloneOffsetY,
+                  scale: LENS_SCALE,
+                  transformOrigin: '0 0',
+                }}
+                className="pointer-events-none absolute top-0 left-0 py-6 sm:py-10"
+              >
+                <div className="mb-8 flex flex-wrap items-center justify-between gap-4 opacity-0 sm:mb-10">
+                  <span className="py-1.5 text-xs">spacer</span>
+                </div>
+                <EditorialHeadline isClone shouldReduceMotion />
+              </motion.div>
+
+              {/* Specular Glass Highlight & Chromatic Rim */}
+              <div className="pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.22)_0%,rgba(59,130,246,0.08)_38%,transparent_65%)]" />
+              <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-accent/25" />
+            </motion.div>
+          )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Smooth Scroll Indicator */}
       <motion.a
         href="#about"
         aria-label="Scroll down to explore more"
-        initial={{ opacity: 0, y: 10 }}
+        initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9, duration: 0.5, ease: EASE_OUT_EXPO }}
-        className="group absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-1.5 rounded-md px-2 py-1 text-white/50 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:inline-flex lg:bottom-6"
+        transition={{ delay: 0.85, duration: 0.5, ease: EASE_OUT_EXPO }}
+        className="group absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-1.5 rounded-md px-2 py-1 text-white/50 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:inline-flex"
       >
-        <span className="text-[10px] font-medium uppercase tracking-[0.22em]">
+        <span className="font-mono text-[10px] font-medium uppercase tracking-[0.22em]">
           Scroll
         </span>
         <motion.span
